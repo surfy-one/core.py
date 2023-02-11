@@ -95,7 +95,7 @@ rows = [
 	}
 ]
 
-inserted_ids = table.insert_one(row) # List of Integers
+inserted_ids = table.insert(rows) # List of Integers
 
 ```
 <br/>
