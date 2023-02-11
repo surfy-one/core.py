@@ -11,6 +11,7 @@ authors = [
   { name="Eugen Nukatak" },
 ]
 description = "This repository contains all the libraries for successful working with Surfy Ecosystem in a Python environment."
+keywords = ["surfy", "sqlite"]
 readme = "README.md"
 requires-python = ">=3.7"
 classifiers = [
@@ -23,3 +24,9 @@ classifiers = [
 "Homepage" = "https://surfy.one"
 "GitHub" = "https://github.com/surfy-one/core.py"
 "Bug Tracker" = "https://github.com/surfy-one/core.py/issues"
+
+[tool.setuptools]
+packages=["surfy"]
+
+[setuptools-specific]
+package_dir={"sqlite" = "surfy"}
