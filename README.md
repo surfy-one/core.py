@@ -23,6 +23,7 @@ pip3 install surfy
 ### Usage
 ```python
 
+from surfy.sqlite import SQLite
 db = SQLite('PATH_TO_FILE')
 
 ```
@@ -51,7 +52,7 @@ db.remove()
 ```
 <br/>
 
-### .table(TABLE_NAME)
+### .table(table_name)
 ```python
 
 table = db.table('test_table')
