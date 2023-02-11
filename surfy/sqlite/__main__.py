@@ -1,1 +1,7 @@
-import db
+'''
+
+Surfy SQLite
+
+'''
+
+import surfy.sqlite

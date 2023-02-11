@@ -1,22 +1,38 @@
-import os
-import sqlite3
-import re
-from datetime import datetime
-import json
-
 '''
 
 SQLite
 
 '''
 
+# Import Libs
+import os
+import sqlite3
+import re
+from datetime import datetime
+import json
+
+
 class SQLite:
 
-	def __init__(self, file):
+	'''
+
+	Create DB
+
+	'''
+
+	def __init__(self, file) :
 		self.file = file
 		self.db = sqlite3.connect(file, check_same_thread=False)
 
 	def query(self, query):
+
+		'''
+
+		Simple Query
+
+
+		'''
+
 		cur = self.db.cursor()
 
 		cur.execute(query)
@@ -30,97 +46,107 @@ class SQLite:
 		return result
 
 	def remove(self):
+
+		'''
+
+		Remove DB
+
+		'''
+
 		os.remove(self.file)
 
 	def table(self, name):
+
+		'''
+
+		Returns Table Instance
+
+		'''
+
 		return Table(self, name)
 
-	'''
-	
-	Prepare Values
+	def prepare_values(self, fields, values_type='insert'):
 
-	'''
+		'''
 
-	def prepareValues(self, fields, valuesType='insert'):
-		
+		Prepare Values
+
+		'''
+
 		values = []
 
-		escaped = True if valuesType != 'insert' else False
+		escaped = values_type != 'insert'
 
 		for field in fields:
-			value = self.prepareValue(field, escaped)
+			value = self.prepare_value(field, escaped)
 
-			if valuesType == 'set':
-				
-				values.append('`{}`={}'.format(field, value))
+			if values_type == 'set':
 
-			elif valuesType == 'where':
+				values.append(f'`{field}`={value}')
+
+			elif values_type == 'where':
 
 				if value == 'NULL':
-					values.append('`{}` IS NULL'.format(field));
+					values.append(f'`{field}` IS NULL')
 				else:
-					values.append('`{}`={}'.format(field, value));
+					values.append(f'`{field}`={value}')
 
 			else:
-				values.append(value);
+				values.append(value)
 
-		if valuesType == 'insert':
-			return values;
+		if values_type == 'insert':
+			return values
 
-		if valuesType == 'where':
+		if values_type == 'where':
 			return ' AND '.join(values)
 
 		return ', '.join(values)
 
-	'''
-	
-	Prepare Value
+	def prepare_value(self, value, escaped):
 
-	'''
+		'''
 
-	def prepareValue(self, v, escaped):
+		Prepare Value
 
-		if not v:
-			v = 'NULL'
-		elif not isinstance(v, int) and not isinstance(v, float):
-			if v == 'CURRENT_TIME':
-				v = 'DATE({})'.format(int(datetime.now().timestamp()))
-			if type(v) is dict:
-				v = json.dumps(v)
+		'''
+
+		if not value:
+			value = 'NULL'
+		elif not isinstance(value, int) and not isinstance(value, float):
+			if value == 'CURRENT_TIME':
+				value = f'DATE({int(datetime.now().timestamp())})'
+			if isinstance(value, dict):
+				value = json.dumps(value)
 
 			if escaped:
-				v = "'{}'".format(v)
+				value = f"'{value}'"
 
-		return str(v);
-
-
-'''
-
-	Table
-
-'''
+		return str(value)
 
 class Table:
+
+	'''
+
+	Table Class
+
+	'''
 
 	def __init__(self, sql, name):
 		self.sql = sql
 		self.name = name
 
-	'''
-
-	Find
-
-	'''
-
 	def find(self, match=False, options=False, one=False):
+
+		'''
+	
+		Find in Table
+
+		'''
+
 		fields = '*'
 		query = []
 
-		'''
-		
-			Selector
-
-		'''
+		# Selector
 
 		if match and len(match):
 			where = []
@@ -131,42 +157,36 @@ class Table:
 				if '$like' in value:
 
 					# LIKE
-					where.append("`{}` LIKE '{}'".format(field, value['$like']))
+					where.append(f"`{field}` LIKE '{value['$like']}'")
 
 				else:
 					# Default
 
-					if type(value) is dict:						
-						value = "'{}'".format(json.dumps(value))
+					if isinstance(value, dict):
+						value = f"'{json.dumps(value)}'"
 
 					elif isinstance(value, str):
-						value = "'{}'".format(value)
+						value = f"'{value}'"
 
-					where.append('`{}`={}'.format(field, value));
+					where.append(f'`{field}`={value}')
 
-			query.append('WHERE {}'.format(' AND '.join(where)));
+			query.append(f"WHERE {' AND '.join(where)}")
 
-		
-
-		'''
-
-			Create Options
-
-		'''
+		# Create Options
 
 		if options:
-			
+
 			if 'skip' in options:
-				limit = options['limit'] if 'limit' in options else -1;
-				query.append("LIMIT {} OFFSET {}".format(limit, options['skip']))
+				limit = options['limit'] if 'limit' in options else -1
+				query.append(f"LIMIT {limit} OFFSET {options['skip']}")
 			elif 'limit' in options:
-				query.append("LIMIT {}".format(options['limit']))
+				query.append(f"LIMIT {options['limit']}")
 
 
 			if 'fields' in options and len(options['fields']):
-				fields = "`{}`".format('`,`'.join(options['fields']))
+				fields = f"`{'`,`'.join(options['fields'])}`"
 
-		query.insert(0, "SELECT {} FROM `{}`".format(fields, self.name))
+		query.insert(0, f"SELECT {fields} FROM `{self.name}`")
 		query = ' '.join(query)
 
 		cur = self.sql.db.cursor()
@@ -177,18 +197,18 @@ class Table:
 
 		for idx, row in enumerate(result):
 			data = {}
-			
-			for cX, col  in enumerate(columns):
-				v = row[cX]
 
-				if isinstance(v, str) and re.search(r'^DATE', v):
-					v = re.sub(r'^DATE\((.+)\)$', r'\1', v)
-					v = datetime.fromtimestamp(int(v))
+			for cid, col  in enumerate(columns):
+				value = row[cid]
 
-				data[col] = v
+				if isinstance(value, str) and re.search(r'^DATE', value):
+					value = re.sub(r'^DATE\((.+)\)$', r'\1', value)
+					value = datetime.fromtimestamp(int(value))
+
+				data[col] = value
 
 			result[idx] = data
-		
+
 		if one:
 			if len(result):
 				result = result[0]
@@ -197,13 +217,14 @@ class Table:
 
 		return result
 
-	'''
+	def find_one(self, match=False, options=False):
 
-	Find One
+		'''
 
-	'''
+		Find One in Table
 
-	def findOne(self, match=False, options=False):
+		'''
+
 		if not options:
 			options = {}
 
@@ -211,13 +232,14 @@ class Table:
 
 		return self.find(match, options, True)
 
-	'''
-	
-	Insert Many
-
-	'''
-
 	def insert(self, rows, one=False):
+
+		'''
+		
+		Insert Many Into Table
+
+		'''
+
 		fields = set()
 		values = []
 
@@ -226,36 +248,36 @@ class Table:
 				fields.add(field)
 
 		for row in rows:
-			rowData = []
+			row_data = []
 			for field in fields:
-				v = row[field] if field in row else 'NULL'
-				rowData.append(v)
+				value = row[field] if field in row else 'NULL'
+				row_data.append(value)
 
-			values.append(self.sql.prepareValues(rowData))
+			values.append(self.sql.prepare_values(row_data))
 
-		query = 'INSERT OR IGNORE INTO `{}` ({}) VALUES({})'.format(self.name, ', '.join(fields), ', '.join(['?' for n in fields]))
+		placeholders = ', '.join(['?' for n in fields])
+		fields = ', '.join(fields)
+		query = f"INSERT OR IGNORE INTO `{self.name}` ({fields}) VALUES({placeholders})"
+		print(query)
 
 		result = []
 		cur = self.sql.db.cursor()
 
 		for value in values:
-			cur.execute(query, value);
+			cur.execute(query, value)
 			result.append(cur.lastrowid)
-		
-		# cur.commit()
 
 		if one:
 			return result[0]
 
 		return result
 
-	'''
-	
-	Insert One
+	def insert_one(self, row):
 
-	'''
+		'''
+		
+		Insert One Into Table
 
-	def insertOne(self, row):
+		'''
+
 		return self.insert([row], True)
-
-
