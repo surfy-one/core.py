@@ -4,4 +4,4 @@ Surfy SQLite
 
 '''
 
-import surfy.sqlite
+import surfy.sqlite # pylint: disable=unused-import

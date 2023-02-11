@@ -4,4 +4,4 @@ Surfy Ecosystem
 
 '''
 
-import surfy
+import surfy # pylint: disable=unused-import
