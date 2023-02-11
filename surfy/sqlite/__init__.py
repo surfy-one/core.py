@@ -1,1 +1,1 @@
-from sqlite.db import DB
+from surfy.sqlite.db import SQLite

@@ -6,11 +6,11 @@ import json
 
 '''
 
-DB
+SQLite
 
 '''
 
-class DB:
+class SQLite:
 
 	def __init__(self, file):
 		self.file = file
