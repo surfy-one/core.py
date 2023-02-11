@@ -61,7 +61,7 @@ table = db.table('test_table')
 ```
 <br/>
 
-### table.insertOne(row)
+### table.insert_one(row)
 ```python
 
 row = {
@@ -112,7 +112,7 @@ options = {
 	'fields': ['id', 'currentTime', 'data']
 }
 
-result = testTable.findOne(match, options)
+result = testTable.find_one(match, options)
 
 '''
 
