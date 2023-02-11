@@ -8,9 +8,7 @@ This repository contains all the libraries for successful working with Surfy Eco
 ## Installation
 
 ```
-
 pip3 install surfy
-
 ```
 
 ## Libraries
