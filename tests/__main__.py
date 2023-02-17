@@ -4,5 +4,5 @@ Surfy Tests
 
 '''
 
-from tests import init
+import init
 init.test()

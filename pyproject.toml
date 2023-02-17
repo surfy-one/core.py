@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "surfy"
-version = "1.0.1"
+version = "1.0.3"
 authors = [
   { name="Alexander Yermolenko" },
   { name="PugoBoss" },
@@ -26,7 +26,7 @@ classifiers = [
 "Bug Tracker" = "https://github.com/surfy-one/core.py/issues"
 
 [tool.setuptools]
-packages=["surfy"]
+packages=["surfy","surfy.sqlite"]
 
 [setuptools-specific]
 package_dir={"sqlite" = "surfy"}
