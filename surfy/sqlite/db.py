@@ -78,7 +78,12 @@ class SQLite:
 		escaped = values_type != 'insert'
 
 		for field in fields:
-			value = self.prepare_value(field, escaped)
+			if values_type != 'insert':
+				value = fields[field]
+			else:
+				value = field
+
+			value = self.prepare_value(value, escaped)
 
 			if values_type == 'set':
 
@@ -110,10 +115,10 @@ class SQLite:
 
 		'''
 
-		if not value:
-			value = 'NULL'
-		elif isinstance(value, bool):
+		if isinstance(value, bool):
 			value = 1 if value else 0
+		elif not value:
+			value = 'NULL'
 		elif not isinstance(value, int) and not isinstance(value, float):
 			if value == 'CURRENT_TIME':
 				value = f'DATE({int(datetime.now().timestamp())})'
@@ -132,6 +137,9 @@ class SQLite:
 		Extract JSON
 
 		'''
+
+		if not isinstance(value, str):
+			return value
 
 		try:
 			value = json.loads(value)
@@ -315,6 +323,9 @@ class Table:
 
 		'''
 
+		if not update:
+			return False
+
 		query = []
 
 		# Selector
@@ -355,23 +366,7 @@ class Table:
 
 
 		# Update
-		updates = []
-		for field in update:
-			value = update[field]
-
-			if isinstance(value, dict):
-				value = f"'{json.dumps(value)}'"
-			elif isinstance(value, str):
-				value = f"'{value}'"
-			elif isinstance(value, bool):
-				value = 1 if value else 0
-
-			updates.append(f"'{field}'={value}")
-
-		if not updates:
-			return False
-
-		updates = ','.join(updates)
+		updates = self.sql.prepare_values(update, 'set')
 
 		query.insert(0, f"UPDATE `{self.name}` SET {updates}")
 		query = ' '.join(query)

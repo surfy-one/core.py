@@ -156,6 +156,30 @@ result [
 '''
 
 ```
+<br/>
+
+### table.update_one(match, update, options)
+```python
+
+match = {
+	'data': {
+		'$like': 'Some Data %'
+	}
+}
+
+update = {
+	'currentTime': 'CURRENT_TIME'
+}
+
+options = {
+	'skip': 2,
+	'limit': 1
+}
+
+result = testTable.find(match, update, options)
+
+
+```
 
 <br />
 <br />
