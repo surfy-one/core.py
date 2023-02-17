@@ -112,6 +112,8 @@ class SQLite:
 
 		if not value:
 			value = 'NULL'
+		elif isinstance(value, bool):
+			value = 1 if value else 0
 		elif not isinstance(value, int) and not isinstance(value, float):
 			if value == 'CURRENT_TIME':
 				value = f'DATE({int(datetime.now().timestamp())})'
@@ -122,6 +124,21 @@ class SQLite:
 				value = f"'{value}'"
 
 		return str(value)
+
+	def get_json(self, value):
+
+		'''
+
+		Extract JSON
+
+		'''
+
+		try:
+			value = json.loads(value)
+		except ValueError:
+			return value
+
+		return value
 
 class Table:
 
@@ -154,7 +171,7 @@ class Table:
 			for field in match:
 				value = match[field]
 
-				if '$like' in value:
+				if isinstance(value, dict) and '$like' in value:
 
 					# LIKE
 					where.append(f"`{field}` LIKE '{value['$like']}'")
@@ -167,6 +184,9 @@ class Table:
 
 					elif isinstance(value, str):
 						value = f"'{value}'"
+
+					elif isinstance(value, bool):
+						value = 1 if value else 0
 
 					where.append(f'`{field}`={value}')
 
@@ -202,8 +222,12 @@ class Table:
 				value = row[cid]
 
 				if isinstance(value, str) and re.search(r'^DATE', value):
+
 					value = re.sub(r'^DATE\((.+)\)$', r'\1', value)
 					value = datetime.fromtimestamp(int(value))
+
+				else:
+					value = self.sql.get_json(value)
 
 				data[col] = value
 
@@ -258,7 +282,6 @@ class Table:
 		placeholders = ', '.join(['?' for n in fields])
 		fields = ', '.join(fields)
 		query = f"INSERT OR IGNORE INTO `{self.name}` ({fields}) VALUES({placeholders})"
-		print(query)
 
 		result = []
 		cur = self.sql.db.cursor()
@@ -266,6 +289,8 @@ class Table:
 		for value in values:
 			cur.execute(query, value)
 			result.append(cur.lastrowid)
+
+		self.sql.db.commit()
 
 		if one:
 			return result[0]
@@ -281,3 +306,97 @@ class Table:
 		'''
 
 		return self.insert([row], True)
+
+	def update(self, match, update, options=False):
+
+		'''
+
+		Update Row in the Table
+
+		'''
+
+		query = []
+
+		# Selector
+
+		if match and len(match):
+			where = []
+
+			for field in match:
+				value = match[field]
+
+				if isinstance(value, dict) and '$like' in value:
+
+					# LIKE
+					where.append(f"`{field}` LIKE '{value['$like']}'")
+
+				else:
+					# Default
+
+					if isinstance(value, dict):
+						value = f"'{json.dumps(value)}'"
+
+					elif isinstance(value, str):
+						value = f"'{value}'"
+
+					where.append(f'`{field}`={value}')
+
+			query.append(f"WHERE {' AND '.join(where)}")
+
+		# Create Options
+
+		if options:
+
+			if 'skip' in options:
+				limit = options['limit'] if 'limit' in options else -1
+				query.append(f"LIMIT {limit} OFFSET {options['skip']}")
+			elif 'limit' in options:
+				query.append(f"LIMIT {options['limit']}")
+
+
+		# Update
+		updates = []
+		for field in update:
+			value = update[field]
+
+			if isinstance(value, dict):
+				value = f"'{json.dumps(value)}'"
+			elif isinstance(value, str):
+				value = f"'{value}'"
+			elif isinstance(value, bool):
+				value = 1 if value else 0
+
+			updates.append(f"'{field}'={value}")
+
+		if not updates:
+			return False
+
+		updates = ','.join(updates)
+
+		query.insert(0, f"UPDATE `{self.name}` SET {updates}")
+		query = ' '.join(query)
+
+		cur = self.sql.db.cursor()
+		cur.execute(query)
+
+		self.sql.db.commit()
+
+		return True
+
+	def update_one(self, match, update=False, options=False):
+
+		'''
+
+		Update One Row of the Table
+
+		'''
+
+		if not update:
+			return False
+
+		if not options:
+			options = {}
+
+		options['limit'] = 1
+
+		return self.update(match, update, options)
