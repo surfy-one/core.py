@@ -159,6 +159,8 @@ result [
 <br/>
 
 ### table.update_one(match, update, options)
+Updates first matched record
+
 ```python
 
 match = {
@@ -176,8 +178,31 @@ options = {
 	'limit': 1
 }
 
-result = testTable.find(match, update, options)
+result = testTable.update_one(match, update, options)
 
+```
+<br/>
+
+### table.update(match, update, options)
+Updates all matched records
+
+```python
+
+match = {
+	'data': {
+		'$like': 'Some Data %'
+	}
+}
+
+update = {
+	'currentTime': 'CURRENT_TIME'
+}
+
+options = {
+	'skip': 2
+}
+
+result = testTable.update(match, update, options)
 
 ```
 
