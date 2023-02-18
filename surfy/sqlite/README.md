@@ -2,31 +2,20 @@
 
 <br/>
 
-## Installation
-```
-pip3 install Surfy.SQLite
-```
-
-## Usage
-
+### Usage
 ```python
 
-from sqlite import DB
-
-db = DB('PATH_TO_FILE')
+from surfy.sqlite import SQLite
+db = SQLite('PATH_TO_FILE')
 
 ```
-<br/>
 
-## Methods
-
-
-### .query(query)
-
+### Query
 ```python
+
 result = db.query('''CREATE TABLE IF NOT EXISTS test_table
 	(id INTEGER PRIMARY KEY AUTOINCREMENT,
-	createTime TEXT,
+	createTime TEXT COLLATE NOCASE,
 	data TEXT COLLATE NOCASE,
 	extradata TEXT,
 	counter INTEGER,
@@ -37,21 +26,26 @@ result = db.query('''CREATE TABLE IF NOT EXISTS test_table
 ```
 <br/>
 
-### .table(table_name)
-
+### db.remove()
 ```python
 
-testTable = db.table('test_table')
+db.remove()
 
 ```
 <br/>
 
-### table.insertOne(row)
-Inserts a single row into a table
-
+### db.table(table_name)
 ```python
 
-insertedID = testTable.insertOne({
+table = db.table('test_table')
+
+```
+<br/>
+
+### table.insert_one(row)
+```python
+
+row = {
 	'createTime': 'CURRENT_TIME',
 	'data': 'Some Data 1',
 	'extradata': 'Some Extra Data',
@@ -61,36 +55,34 @@ insertedID = testTable.insertOne({
 		'field': 'value'
 	},
 	'array': [1,2,3]
-})
+}
+
+inserted_id = table.insert_one(row) # Integer
 
 ```
 <br/>
 
 ### table.insert(rows)
-Inserts data into a table
-
 ```python
 
-insertedIDs = testTable.insert(
-	[
-		{
-			'createTime': 'CURRENT_TIME', 'data': 'Some Data 1'
-		},
-		{
-			'createTime': 'CURRENT_TIME', 'data': 'Some Data 2'
-		},
-		{
-			'createTime': 'CURRENT_TIME', 'data': 'Some Data 3'
-		}
-	]
-)
+rows = [
+	{
+		'createTime': 'CURRENT_TIME', 'data': 'Some Data 1'
+	},
+	{
+		'createTime': 'CURRENT_TIME', 'data': 'Some Data 2'
+	},
+	{
+		'createTime': 'CURRENT_TIME', 'data': 'Some Data 3'
+	}
+]
+
+inserted_ids = table.insert(rows) # List of Integers
 
 ```
 <br/>
 
-### table.findOne(match, options)
-Finds one row in a table
-
+### table.find_one(match, options)
 ```python
 
 match = {
@@ -101,7 +93,7 @@ options = {
 	'fields': ['id', 'currentTime', 'data']
 }
 
-result = testTable.findOne(match, options)
+result = testTable.find_one(match, options)
 
 '''
 
@@ -117,8 +109,6 @@ result {
 <br/>
 
 ### table.find(match, options)
-Finds matches in a table
-
 ```python
 
 match = {
@@ -146,6 +136,55 @@ result [
 ]
 
 '''
+
+```
+<br/>
+
+### table.update_one(match, update, options)
+Updates first matched record
+
+```python
+
+match = {
+	'data': {
+		'$like': 'Some Data %'
+	}
+}
+
+update = {
+	'currentTime': 'CURRENT_TIME'
+}
+
+options = {
+	'skip': 2,
+	'limit': 1
+}
+
+result = testTable.update_one(match, update, options)
+
+```
+<br/>
+
+### table.update(match, update, options)
+Updates all matched records
+
+```python
+
+match = {
+	'data': {
+		'$like': 'Some Data %'
+	}
+}
+
+update = {
+	'currentTime': 'CURRENT_TIME'
+}
+
+options = {
+	'skip': 2
+}
+
+result = testTable.update(match, update, options)
 
 ```
 
