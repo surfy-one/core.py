@@ -8,6 +8,10 @@ from surfy.sqlite import SQLite
 
 def sqlite_test():
 
+	print('\n\n##### Starting SQLite Test #####\n\n')
+
+	print('SQLite Class:', SQLite)
+
 	'''
 	
 	Runs Test
