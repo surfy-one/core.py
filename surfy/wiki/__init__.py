@@ -4,4 +4,4 @@ Surfy SQLite
 
 '''
 
-from wikipedia.wiki import Wiki
+from surfy.wikipedia.wiki import Wiki

@@ -4,4 +4,4 @@ Surfy SQLite
 
 '''
 
-import wikipedia # pylint: disable=unused-import
+import surfy.wikipedia # pylint: disable=unused-import
