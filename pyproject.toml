@@ -26,7 +26,7 @@ classifiers = [
 "Bug Tracker" = "https://github.com/surfy-one/core.py/issues"
 
 [tool.setuptools]
-packages=["surfy","surfy.sqlite"]
+packages=["surfy","surfy.sqlite","surfy.wiki"]
 
 [setuptools-specific]
-package_dir={"sqlite" = "surfy"}
+package_dir={"sqlite" = "surfy", "wiki" = "surfy"}
