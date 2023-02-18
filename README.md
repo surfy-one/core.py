@@ -14,7 +14,7 @@ pip3 install surfy
 ## Libraries
 
 - [SQLite](https://github.com/surfy-one/core.py/tree/main/surfy/sqlite)
-- [Wikipedia](https://github.com/surfy-one/core.py/tree/main/surfy/wikipedia)
+- [Wikipedia](https://github.com/surfy-one/core.py/tree/main/surfy/wiki)
 - [Words](#words)
 
 <br />
