@@ -7,6 +7,13 @@ Wiki tests
 from surfy.wiki import Wiki
 
 def test():
+
+	'''
+
+	Surfy Wiki Test
+
+	'''
+
 	print('\n\n##### Starting Wiki Test #####\n\n')
 	print('Wiki Class:', Wiki)
 
@@ -23,3 +30,5 @@ def test():
 	print(f'\nContent: {page.content[:250]}...')
 	print(f'\nLinks: {page.links[:10]}...')
 	print(f'\nSummary: {page.summary}')
+
+	return True

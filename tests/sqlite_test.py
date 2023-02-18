@@ -6,17 +6,19 @@ Surfy SQLite Test
 
 from surfy.sqlite import SQLite
 
-def sqlite_test():
+def test():
+
+	'''
+	
+	SQL Test
+
+	'''
 
 	print('\n\n##### Starting SQLite Test #####\n\n')
 
-	print('SQLite Class:', SQLite)
+	print(f'SQLite Class: {SQLite}')
 
-	'''
-	
-	Runs Test
-	
-	'''
+	# Runs Test
 
 	db = SQLite('test_db')
 	print('Created DB')
