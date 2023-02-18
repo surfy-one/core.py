@@ -68,7 +68,7 @@ ignored-modules=
 # Python code to execute, usually for sys.path manipulation such as
 # pygtk.require().
 #init-hook=
-init-hook='import sys, os; sys.path.append(os.getcwd());'
+init-hook='import sys, os; sys.path.append(os.getcwd()); sys.path.append(os.getcwd()+'/tests');'
 
 # Use multiple processes to speed up Pylint. Specifying 0 will auto-detect the
 # number of processors available to use, and will cap the count on Windows to
@@ -175,7 +175,7 @@ function-naming-style=snake_case
 #function-rgx=
 
 # Good variable names which should always be accepted, separated by a comma.
-good-names=x, id, i, j, k, ex, Run, _, db
+good-names=x, id, i, j, k, ex, Run, _, db, go
 
 # Good variable names regexes, separated by a comma. If names match any regex,
 # they will always be accepted
