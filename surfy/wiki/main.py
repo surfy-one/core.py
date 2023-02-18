@@ -124,7 +124,7 @@ class Page:
 
 		'''
 
-		url = f"https://{self.options['lang']}.wikipedia.org/w/api.php?action=query&format=json&titles={self.key}&prop=extracts|links&explaintext"
+		url = f"https://{self.options['lang']}.wikipedia.org/w/api.php?action=query&format=json&titles={self.key}&prop=info|extracts|links&explaintext&inprop=url"
 
 		# Request API
 		x = requests.get(url, timeout=5)
@@ -134,16 +134,20 @@ class Page:
 		if '-1' in data['query']['pages']:
 			return False
 
+		page = data['query']['pages'][str(self.id)]
+
 		# Get Plain Text Content
 
-		self.content = data['query']['pages'][str(self.id)]['extract']
+		self.content = page['extract']
 
 		# Get Links
 
 		links = []
-		for link in data['query']['pages'][str(self.id)]['links']:
+		for link in page['links']:
 			links.append(link['title'])
 		self.links = links
+
+		self.url = page['fullurl']
 
 		return True
 

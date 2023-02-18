@@ -38,6 +38,7 @@ if not page:
 	print('Page Not Found')
 else:
 	page.id # Page ID
+	page.url # Page URL
 	page.title # Page Title
 	page.content # Page Plain Text Content
 	page.links # All links from the page

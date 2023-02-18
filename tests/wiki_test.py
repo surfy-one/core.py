@@ -26,6 +26,7 @@ def test():
 		return False
 
 	print(f'\nID: {page.id}')
+	print(f'\nURL: {page.url}')
 	print(f'\nTitle: {page.title}')
 	print(f'\nContent: {page.content[:250]}...')
 	print(f'\nLinks: {page.links[:10]}...')
