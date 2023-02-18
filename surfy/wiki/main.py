@@ -124,7 +124,7 @@ class Page:
 
 		'''
 
-		url = f"https://{self.options['lang']}.wikipedia.org/w/api.php?action=query&format=json&titles={self.key}&prop=info|extracts|links&explaintext&inprop=url"
+		url = f"https://{self.options['lang']}.wikipedia.org/w/api.php?action=query&format=json&titles={self.title}&prop=info|extracts|links&explaintext&inprop=url&redirects=1"
 
 		# Request API
 		x = requests.get(url, timeout=5)
@@ -134,7 +134,13 @@ class Page:
 		if '-1' in data['query']['pages']:
 			return False
 
-		page = data['query']['pages'][str(self.id)]
+		if 'redirects' in data['query']:
+			self.redirects = data['query']['redirects']
+
+		pages = data['query']['pages']
+		self.id = list(pages.keys())[0]
+		page = data['query']['pages'][self.id]
+		self.title = page['title']
 
 		# Get Plain Text Content
 
@@ -169,6 +175,10 @@ class Page:
 		if '-1' in data['query']['pages']:
 			return False
 
+		pages = data['query']['pages']
+		self.id = list(pages.keys())[0]
+		page = data['query']['pages'][self.id]
+
 		# Get Plain Text Summary
 
-		return data['query']['pages'][str(self.id)]['extract']
+		return page['extract']

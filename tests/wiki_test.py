@@ -18,8 +18,9 @@ def test():
 	print('Wiki Class:', Wiki)
 
 	wiki = Wiki()
-	page = wiki.page('Eiffel Tower')
+	# page = wiki.page('Eiffel Tower')
 	# page = wiki.page('1900 Summer Olympics')
+	page = wiki.page('300-metre tower')
 	print(page)
 	if not page:
 		print('Page Not Found')
