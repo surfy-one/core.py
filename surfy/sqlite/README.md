@@ -2,13 +2,21 @@
 
 <br/>
 
-### Usage
+## Installation
+
+```
+pip3 install surfy
+```
+<br/>
+
+## Usage
 ```python
 
 from surfy.sqlite import SQLite
 db = SQLite('PATH_TO_FILE')
 
 ```
+<br/>
 
 ### Query
 ```python
