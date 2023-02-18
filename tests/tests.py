@@ -11,7 +11,7 @@ sys.path.append(sys.path[0]+'/..')
 
 #pylint: enable=wrong-import-position
 
-from sqlite_test import sqlite_test
+from tests.sqlite_test import sqlite_test
 from surfy import Surfy
 from surfy.sqlite import SQLite
 

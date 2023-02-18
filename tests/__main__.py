@@ -4,5 +4,7 @@ Surfy Tests
 
 '''
 
-import init
-init.test()
+import tests
+
+if __name__ == '__main__':
+	tests.test()
