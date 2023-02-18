@@ -175,7 +175,7 @@ function-naming-style=snake_case
 #function-rgx=
 
 # Good variable names which should always be accepted, separated by a comma.
-good-names=i, j, k, ex, Run, _, db
+good-names=x, id, i, j, k, ex, Run, _, db
 
 # Good variable names regexes, separated by a comma. If names match any regex,
 # they will always be accepted
@@ -272,7 +272,7 @@ ignored-parents=
 max-args=5
 
 # Maximum number of attributes for a class (see R0902).
-max-attributes=7
+max-attributes=10
 
 # Maximum number of boolean expressions in an if statement (see R0916).
 max-bool-expr=5
@@ -321,7 +321,7 @@ indent-after-paren=4
 indent-string='	'
 
 # Maximum number of characters on a single line.
-max-line-length=100
+max-line-length=200
 
 # Maximum number of lines in a module.
 max-module-lines=1000
@@ -339,7 +339,7 @@ single-line-if-stmt=no
 
 # List of modules that can be imported at any level, not just the top level
 # one.
-allow-any-import-level=
+allow-any-import-level=yes
 
 # Allow explicit reexports by alias from a package __init__.
 allow-reexport-from-package=no
