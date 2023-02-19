@@ -125,7 +125,7 @@ class Page:
 
 		'''
 
-		url = f"https://{self.options['lang']}.wikipedia.org/w/api.php?action=query&format=json&titles={self.title}&prop=info|extracts|links&explaintext&inprop=url&redirects=1"
+		url = f"https://{self.options['lang']}.wikipedia.org/w/api.php?action=query&format=json&titles={encode(self.title)}&prop=info|extracts|links&explaintext&inprop=url&redirects=1"
 
 		# Request API
 		x = requests.get(url, timeout=5)
@@ -167,7 +167,7 @@ class Page:
 
 		'''
 
-		url = f"https://{self.options['lang']}.wikipedia.org/w/api.php?format=json&action=query&redirects=1&titles={self.key}&prop=extracts&explaintext&exintro"
+		url = f"https://{self.options['lang']}.wikipedia.org/w/api.php?format=json&action=query&redirects=1&titles={encode(self.title)}&prop=extracts&explaintext&exintro"
 
 		# Request API
 		x = requests.get(url, timeout=5)
