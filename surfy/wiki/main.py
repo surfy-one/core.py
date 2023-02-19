@@ -111,6 +111,7 @@ class Page:
 		self.title = data['title']
 		self.key = data['key']
 		self.html_url = data['html_url']
+		self.redirected = False
 
 		self.get_content()
 
@@ -135,6 +136,7 @@ class Page:
 			return False
 
 		if 'redirects' in data['query']:
+			self.redirected = True
 			self.redirects = data['query']['redirects']
 
 		pages = data['query']['pages']
