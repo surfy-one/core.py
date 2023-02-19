@@ -67,7 +67,7 @@ class Wiki:
 
 			x = requests.get(url, timeout=5)
 			data = json.loads(x.text)
-			if not data['pages']:
+			if 'pages' not in data or not data['pages']:
 				return False
 
 			if str(addr) not in data['pages']:

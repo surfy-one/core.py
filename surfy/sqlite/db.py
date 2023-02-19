@@ -220,7 +220,7 @@ class Table:
 		try:
 			cur.execute(query, values)
 		except Exception as e:
-			print(f'Problem query: "{query}"')
+			print(f'Problem Find Query: "{query}"')
 			raise ValueError(e) from e
 
 		result = cur.fetchall()
@@ -384,7 +384,12 @@ class Table:
 		query = ' '.join(query)
 
 		cur = self.sql.db.cursor()
-		cur.execute(query, values)
+
+		try:
+			cur.execute(query, values)
+		except Exception as e:
+			print(f'Problem Update Query: "{query}"')
+			raise ValueError(e) from e
 
 		self.sql.db.commit()
 
