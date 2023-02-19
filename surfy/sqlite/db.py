@@ -170,6 +170,7 @@ class Table:
 
 		fields = '*'
 		query = []
+		values = []
 
 		# Selector
 
@@ -182,21 +183,19 @@ class Table:
 				if isinstance(value, dict) and '$like' in value:
 
 					# LIKE
-					where.append(f"`{field}` LIKE '{value['$like']}'")
+					where.append(f"`{field}` LIKE ?")
+					values.append(value['$like'])
 
 				else:
+
 					# Default
-
 					if isinstance(value, dict):
-						value = f"'{json.dumps(value)}'"
-
-					elif isinstance(value, str):
-						value = f"'{value}'"
-
+						value = json.dumps(value)
 					elif isinstance(value, bool):
 						value = 1 if value else 0
 
-					where.append(f'`{field}`={value}')
+					values.append(value)
+					where.append(f'`{field}`=?')
 
 			query.append(f"WHERE {' AND '.join(where)}")
 
@@ -218,7 +217,12 @@ class Table:
 		query = ' '.join(query)
 
 		cur = self.sql.db.cursor()
-		cur.execute(query)
+		try:
+			cur.execute(query, values)
+		except Exception as e:
+			print(f'Problem query: "{query}"')
+			raise Exception(e)
+
 		result = cur.fetchall()
 
 		columns = list(map(lambda x: x[0], cur.description))
@@ -327,6 +331,7 @@ class Table:
 			return False
 
 		query = []
+		values = []
 
 		# Selector
 
@@ -339,18 +344,19 @@ class Table:
 				if isinstance(value, dict) and '$like' in value:
 
 					# LIKE
-					where.append(f"`{field}` LIKE '{value['$like']}'")
+					where.append(f"`{field}` LIKE ?")
+					values.append(value['$like'])
 
 				else:
+					
 					# Default
-
 					if isinstance(value, dict):
-						value = f"'{json.dumps(value)}'"
+						value = json.dumps(value)
+					elif isinstance(value, bool):
+						value = 1 if value else 0
 
-					elif isinstance(value, str):
-						value = f"'{value}'"
-
-					where.append(f'`{field}`={value}')
+					values.append(value)
+					where.append(f'`{field}`=?')
 
 			query.append(f"WHERE {' AND '.join(where)}")
 
@@ -366,13 +372,19 @@ class Table:
 
 
 		# Update
-		updates = self.sql.prepare_values(update, 'set')
+		updates = []
+		update_values = []
+		for field in update:
+			updates.append(f"'{field}'=?")
+			update_values.append(self.sql.prepare_value(update[field], False))
 
-		query.insert(0, f"UPDATE `{self.name}` SET {updates}")
-		query = ' '.join(query)
+		values = update_values + values
+
+		query.insert(0, f"UPDATE `{self.name}` SET {', '.join(updates)}")
+		query = ' '.join(query)		
 
 		cur = self.sql.db.cursor()
-		cur.execute(query)
+		cur.execute(query, values)
 
 		self.sql.db.commit()
 

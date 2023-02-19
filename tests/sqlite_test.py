@@ -71,5 +71,12 @@ def test():
 	results = test_table.find({ 'data': { '$like': 'Some Data%' } })
 	print('Find: ', results)
 
+	# Update
+	result = test_table.update_one({'data': 'Some Data 2'}, {'data': 'Updated Data'})
+	print(f'Update result: {result}')
+
+	result = test_table.find_one({'data': 'Updated Data'})
+	print(f'Updated row: {result}')
+
 	# Remove
 	db.remove()
