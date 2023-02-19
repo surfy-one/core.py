@@ -175,7 +175,7 @@ function-naming-style=snake_case
 #function-rgx=
 
 # Good variable names which should always be accepted, separated by a comma.
-good-names=x, id, i, j, k, ex, Run, _, db, go
+good-names=x, id, i, j, e, k, ex, Run, _, db, go
 
 # Good variable names regexes, separated by a comma. If names match any regex,
 # they will always be accepted
@@ -272,7 +272,7 @@ ignored-parents=
 max-args=5
 
 # Maximum number of attributes for a class (see R0902).
-max-attributes=10
+max-attributes=12
 
 # Maximum number of boolean expressions in an if statement (see R0916).
 max-bool-expr=5

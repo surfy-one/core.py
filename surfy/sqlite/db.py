@@ -221,7 +221,7 @@ class Table:
 			cur.execute(query, values)
 		except Exception as e:
 			print(f'Problem query: "{query}"')
-			raise Exception(e)
+			raise ValueError(e) from e
 
 		result = cur.fetchall()
 
@@ -342,14 +342,14 @@ class Table:
 				value = match[field]
 
 				if isinstance(value, dict) and '$like' in value:
-
 					# LIKE
+
 					where.append(f"`{field}` LIKE ?")
 					values.append(value['$like'])
 
 				else:
-					
 					# Default
+
 					if isinstance(value, dict):
 						value = json.dumps(value)
 					elif isinstance(value, bool):
@@ -381,7 +381,7 @@ class Table:
 		values = update_values + values
 
 		query.insert(0, f"UPDATE `{self.name}` SET {', '.join(updates)}")
-		query = ' '.join(query)		
+		query = ' '.join(query)
 
 		cur = self.sql.db.cursor()
 		cur.execute(query, values)
