@@ -412,3 +412,53 @@ class Table:
 		options['limit'] = 1
 
 		return self.update(match, update, options)
+
+	def count(self, match=False):
+
+		'''
+
+		Rows Count
+
+		'''
+
+		query = []
+		values = []
+
+		if match and len(match):
+			where = []
+
+			for field in match:
+				value = match[field]
+
+				if isinstance(value, dict) and '$like' in value:
+
+					# LIKE
+					where.append(f"`{field}` LIKE ?")
+					values.append(value['$like'])
+
+				else:
+
+					# Default
+					if isinstance(value, dict):
+						value = json.dumps(value)
+					elif isinstance(value, bool):
+						value = 1 if value else 0
+
+					values.append(value)
+					where.append(f'`{field}`=?')
+
+			query.append(f"WHERE {' AND '.join(where)}")
+
+		query.insert(0, f"SELECT COUNT(1) as count FROM `{self.name}`")
+		query = ' '.join(query)
+
+		cur = self.sql.db.cursor()
+		try:
+			cur.execute(query, values)
+		except Exception as e:
+			print(f'Problem Count Query: "{query}"')
+			raise ValueError(e) from e
+
+		result = cur.fetchone()[0]
+
+		return result
