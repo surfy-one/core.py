@@ -75,6 +75,8 @@ class Wiki:
 
 			addr = data['pages'][str(addr)]['title']
 
+		addr = str(addr)
+
 		# Get Page
 
 		url = f"https://{lang}.wikipedia.org/w/rest.php/v1/page/{encode(addr)}/bare"
@@ -108,7 +110,7 @@ class Page:
 		self.options = options
 		self.data = data
 		self.id = data['id']
-		self.title = data['title']
+		self.title = str(data['title'])
 		self.key = data['key']
 		self.html_url = data['html_url']
 		self.redirected = False
