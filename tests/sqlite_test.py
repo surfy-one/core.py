@@ -78,5 +78,8 @@ def test():
 	result = test_table.find_one({'data': 'Updated Data'})
 	print(f'Updated row: {result}')
 
+	result = test_table.count()
+	print(f'Documents Count: {result}')
+
 	# Remove
 	db.remove()
