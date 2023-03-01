@@ -197,6 +197,22 @@ options = {
 result = testTable.update(match, update, options)
 
 ```
+<br/>
+
+### table.count(match)
+Counts rows in the table
+
+```python
+
+match = {
+	'data': {
+		'$like': 'Some Data %'
+	}
+}
+
+result = testTable.count(match) # Integer
+
+```
 
 <br />
 <br />

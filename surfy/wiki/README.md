@@ -15,7 +15,18 @@ pip3 install surfy
 ```python
 
 from surfy.wiki import Wiki
+
 wiki = Wiki()
+
+# Or
+
+options = {
+	'ua': 'Mozilla/4.0', # User Agent
+	'redirect': 1,
+	'lang': 'en'
+}
+
+wiki = Wiki(options) # options are optional
 
 ```
 <br/>
@@ -34,15 +45,13 @@ wiki.page(
 '''
 page = wiki.page('Eiffel Tower')
 
-if not page:
-	print('Page Not Found')
-else:
-	page.id # Page ID
-	page.url # Page URL
-	page.title # Page Title
-	page.content # Page Plain Text Content
-	page.links # All links from the page
-	page.summary # Plain Text Summary
+page.status_code # Status Code - e.g. 200 it's ok, 404 - not found
+page.id # Page ID
+page.url # Page URL
+page.title # Page Title
+page.content # Page Plain Text Content
+page.links # All links from the page
+page.summary # Plain Text Summary
 
 ```
 <br/>

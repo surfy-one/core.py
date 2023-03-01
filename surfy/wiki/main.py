@@ -38,6 +38,11 @@ class Wiki:
 		if 'redirect' not in options:
 			self.options['redirect'] = 1
 
+		self.headers = {}
+		if 'ua' in options:
+			self.headers['User-Agent'] = options['ua']
+
+
 	def set_lang(self, lang):
 
 		'''
@@ -64,14 +69,18 @@ class Wiki:
 			# Extract Title From ID
 
 			url = f"http://{lang}.wikipedia.org/w/api.php?action=query&pageids={addr}&format=json"
+			url = f"http://{lang}.wikipedia.org/w/api.php?action=query&pageids=1936&format=json"
 
-			x = requests.get(url, timeout=5)
+			x = requests.get(url, headers=self.headers, timeout=30)
+			if x.status_code != 200:
+				return Page({'status_code': x.status_code}, False)
+
 			data = json.loads(x.text)
 			if 'pages' not in data or not data['pages']:
-				return False
+				return Page({'status_code': 404}, False)
 
 			if str(addr) not in data['pages']:
-				return False
+				return Page({'status_code': 404}, False)
 
 			addr = data['pages'][str(addr)]['title']
 
@@ -80,11 +89,13 @@ class Wiki:
 		# Get Page
 
 		url = f"https://{lang}.wikipedia.org/w/rest.php/v1/page/{encode(addr)}/bare"
-		x = requests.get(url, timeout=5)
+		x = requests.get(url, headers=self.headers, timeout=30)
+		if x.status_code != 200:
+			return Page({'status_code': x.status_code}, False)
 		data = json.loads(x.text)
 
 		if 'httpCode' in data and data['httpCode'] == 404:
-			return False
+			return Page({'status_code': 404}, False)
 
 		page_options = self.options
 		page_options['lang'] = lang
@@ -107,17 +118,25 @@ class Page:
 
 		'''
 
-		self.options = options
-		self.data = data
-		self.id = data['id']
-		self.title = str(data['title'])
-		self.key = data['key']
-		self.html_url = data['html_url']
-		self.redirected = False
+		if 'status_code' in data:
+			self.status_code = data['status_code']
+		else:
+			self.options = options
+			self.data = data
+			self.id = data['id']
+			self.title = str(data['title'])
+			self.key = data['key']
+			self.html_url = data['html_url']
+			self.redirected = False
+			self.status_code = 200
 
-		self.get_content()
+			self.headers = {}
+			if 'ua' in options:
+				self.headers['User-Agent'] = options['ua']
 
-		self.summary = self.get_summary()
+			self.get_content()
+
+			self.summary = self.get_summary()
 
 	def get_content(self):
 
@@ -130,7 +149,9 @@ class Page:
 		url = f"https://{self.options['lang']}.wikipedia.org/w/api.php?action=query&format=json&titles={encode(self.title)}&prop=info|extracts|links&explaintext&inprop=url&redirects=1"
 
 		# Request API
-		x = requests.get(url, timeout=5)
+		x = requests.get(url, headers=self.headers, timeout=30)
+		if x.status_code != 200:
+			return False
 		data = json.loads(x.text)
 
 		# Page Not Found
@@ -153,8 +174,10 @@ class Page:
 		# Get Links
 
 		links = []
-		for link in page['links']:
-			links.append(link['title'])
+
+		if 'links' in page:
+			for link in page['links']:
+				links.append(link['title'])
 		self.links = links
 
 		self.url = page['fullurl']
@@ -172,7 +195,9 @@ class Page:
 		url = f"https://{self.options['lang']}.wikipedia.org/w/api.php?format=json&action=query&redirects=1&titles={encode(self.title)}&prop=extracts&explaintext&exintro"
 
 		# Request API
-		x = requests.get(url, timeout=5)
+		x = requests.get(url, headers=self.headers, timeout=30)
+		if x.status_code != 200:
+			return False
 		data = json.loads(x.text)
 
 		# Page Not Found
