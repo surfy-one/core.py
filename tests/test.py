@@ -13,6 +13,7 @@ sys.path.append(sys.path[0]+'/..')
 
 from sqlite_test import test as sqlite_test
 from wiki_test import test as wiki_test
+from words_test import test as words_test
 from surfy import Surfy
 
 
@@ -28,8 +29,9 @@ def go():
 
 	# Runs Tests
 
-	sqlite_test()
-	wiki_test()
+	# sqlite_test()
+	# wiki_test()
+	words_test()
 
 if __name__ == '__main__':
 	go()
