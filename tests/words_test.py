@@ -12,3 +12,4 @@ def test():
 	
 	print('Digity Index:', w.digity(corpus))
 	print('Redundancy Index:', w.redundancy(corpus))
+	print(w.remove_punct(corpus))
