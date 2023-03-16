@@ -15,7 +15,11 @@ pip3 install surfy
 
 - [SQLite](https://github.com/surfy-one/core.py/tree/main/surfy/sqlite)
 - [Wikipedia](https://github.com/surfy-one/core.py/tree/main/surfy/wiki)
-- [Words](#words)
+- [Vision](https://github.com/surfy-one/core.py/tree/main/surfy/vision)
+- [Geo](https://github.com/surfy-one/core.py/tree/main/surfy/geo)
+- [Words](https://github.com/surfy-one/core.py/tree/main/surfy/words)
+- [Sounds](https://github.com/surfy-one/core.py/tree/main/surfy/sounds)
+- [Search](https://github.com/surfy-one/core.py/tree/main/surfy/search)
 
 <br />
 <br />
